@@ -1,19 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Dec  1 13:02:37 2022
 
-@author: maxfou
-"""
-# -*- coding: utf-8 -*-
 import numpy as np
 import scipy.linalg as sc
 
 
 """
-
     Question 3
-
 """
 def remontee(A,b):
     x = np.copy(b)
@@ -38,8 +31,8 @@ def remontee2(A,b):
         if P[i,i]==0:
             x[i]=0
         else:
-            x[i] = x[i] - A[i][i+1:n] @ x[i+1:n]
-            x[i] = x[i] / A[i][i]
+            x[i] = x[i] - A[i][i+1:n] @ x[i+1:n]    
+            x[i] = x[i] / A[i][i]                  
     return x
 
 def descente2(A,b):
@@ -93,23 +86,35 @@ C[2,2]=0
 
 P=np.eye(20)
 for i in range(20):
-    if i==7 or i==8 or i==15 or i==16 or i==17 or i==18:
+    if i==6 or i==7 or i==14 or i==15 or i==16 or i==17:
         P[i,i]=0
 
 L,U = LU2(A)
 
+yv=descente(L,pi)
+xv=remontee(U,yv)
+
 y = descente2(P@L, P@pi)
 x1 = remontee2(U,y)
+print(np.allclose(U@x1, y))
+Uinv=np.linalg.inv(U)
+print(U)
+x3=np.dot(Uinv,y)  #Pour approcher le bon x, comparer avec x1
+print(P@A@P@x3,P@pi)
+print(x3,x1)
+
+print(U@x1,y)  #Souci ici, Ux!=y
+x2=remontee2(P@U,y)
 print(x1)
 print(P@A@x1, P@pi)
+print(np.allclose(P@L@y, P@pi))
+print(np.allclose(P@y, y))   #Le problème vient de la remontee2, pas de la descente2
 print(np.allclose(A@x1, pi)) # True
 print(np.allclose(P@A@x1, P@pi)) 
 print(np.allclose(P@x1, x1)) 
 
 """
-
     Question 4    
-
 """
 
 
@@ -151,4 +156,5 @@ def Etape2(t,b):
 x2 = Etape2(A[0], pi)
     
 np.allclose(x1, x2) # True
+
 
